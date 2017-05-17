@@ -1,10 +1,12 @@
 class Character
- attr_accessor :name, :films
+ attr_accessor :name, :films, :height, :mass
 
  @@all = []
 
- def initialize(name)
+ def initialize(name, height, mass)
    @name = name
+   @height = height
+   @mass = mass
    @films = []
  end
 
@@ -25,7 +27,6 @@ class Character
     films.each do |film_url|
       result = RestClient.get(film_url)
       films_array << JSON.parse(result)
-      end
     end
 
     films_array.each do |film_hash|
