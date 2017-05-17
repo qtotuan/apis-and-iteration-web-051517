@@ -4,5 +4,13 @@ require_relative "../lib/api_communicator.rb"
 require_relative "../lib/command_line_interface.rb"
 
 welcome
-character = get_character_from_user
-show_character_movies(character)
+choice = movie_or_character?
+if choice == "movies" || choice == "movie"
+  movie = get_movie_from_user
+  show_movie_characters(movie)
+elsif choice == "character"
+  character = get_character_from_user
+  show_character_movies(character)
+else
+  puts "Sorry, did not get your input... Try again"
+end
