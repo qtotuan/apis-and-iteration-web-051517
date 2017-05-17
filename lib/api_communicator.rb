@@ -6,25 +6,66 @@ def get_character_movies_from_api(character)
   #make the web request
   all_characters = RestClient.get('http://www.swapi.co/api/people/')
   character_hash = JSON.parse(all_characters)
-  
-  # iterate over the character hash to find the collection of `films` for the given
-  #   `character`
-  # collect those film API urls, make a web request to each URL to get the info
-  #  for that film
-  # return value of this method should be collection of info about each film.
-  #  i.e. an array of hashes in which each hash reps a given film
-  # this collection will be the argument given to `parse_character_movies`
-  #  and that method will do some nice presentation stuff: puts out a list
-  #  of movies by title. play around with puts out other info about a given film.
+
+  i = 0
+  while i < character_hash.length do
+    if character_hash["results"][i]["name"].downcase == character
+      films = character_hash["results"][i]["films"]
+    end
+    i += 1
+  end
+
+    films_array = []
+    films.each do |film_url|
+      result = RestClient.get(film_url)
+      films_array << JSON.parse(result)
+    end
+
+    films_array
+end
+
+def get_movie_from_api(movie)
+  #make the web request
+  all_movies = RestClient.get('http://www.swapi.co/api/films/')
+  movie_hash = JSON.parse(all_movies)
+  i = 0
+  while i < movie_hash.length do
+    if movie_hash["results"][i]["title"].downcase == movie
+      characters = movie_hash["results"][i]["characters"]
+    end
+    i += 1
+  end
+
+    character_array = []
+    characters.each do |character_url|
+      result = RestClient.get(character_url)
+      character_array << JSON.parse(result)
+    end
+
+    character_array
+
 end
 
 def parse_character_movies(films_hash)
-  # some iteration magic and puts out the movies in a nice list
+  films_hash.each do |info_hash|
+    puts info_hash["title"] + " (#{info_hash["release_date"][0..3]})"
+  end
+end
+
+def parse_movie_characters(character_hash)
+  character_hash.each do |info_hash|
+    puts info_hash["name"] + ": eye-color ==> #{info_hash["eye_color"]}"
+  end
 end
 
 def show_character_movies(character)
   films_hash = get_character_movies_from_api(character)
   parse_character_movies(films_hash)
+end
+
+def show_movie_characters(movie)
+  character_hash = get_movie_from_api(movie)
+  parse_movie_characters(character_hash)
 end
 
 ## BONUS
